@@ -1,66 +1,9 @@
-## Foundry
+# DeploymIntent™
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+`DeploymIntent` is a Seaport zone that allows users to incentivize the deployment of arbitrary smart contracts through the use of Seaport orders and stateful zone hooks.
 
-Foundry consists of:
+A Seaport order that specifies the `DeploymIntent` zone can only be fulfilled if the zone passes the `validateOrder` hook.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+The `validateOrder` hook uses the initialization code, salt, and (optionally) initial native token value provided via `extraData` to deploy an arbitrary smart contract. The resulting smart contract address is hashed with the `initialValue` parameter, and the result is compared to the `zoneHash` on the order. If the hashes match, the order is fulfilled; otherwise, the order is rejected.
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Users can use the `DeploymIntent` zone to offer any combination of ERC20, ERC721, and ERC1155 tokens to incentivize the deployment of arbitrary smart contracts. Note that native token incentives are not currently supported, as there is no approval mechanism for native token transfers; wrapped native tokens (such as WETH) can be used instead.

@@ -3,6 +3,8 @@ pragma solidity ^0.8.17;
 
 import {ZoneInterface} from "seaport-types/interfaces/ZoneInterface.sol";
 import {Schema, ZoneParameters} from "seaport-types/lib/ConsiderationStructs.sol";
+import {SIP5} from "shipyard-core/reference/sips/SIP5.sol";
+import {IERC165} from "forge-std/interfaces/IERC165.sol";
 
 struct DeployParams {
     uint256 initialValue;
@@ -10,7 +12,7 @@ struct DeployParams {
     bytes data;
 }
 
-contract DeploymIntent is ZoneInterface {
+contract DeploymIntent is ZoneInterface, SIP5 {
     address public immutable SEAPORT;
     uint256 constant CREATE2_FAILED_SELECTOR = 0x04a5b3ee;
     uint256 constant UNABLE_TO_DERIVE_ZONE_HASH_SELECTOR = 0x2698ad98;
@@ -53,9 +55,22 @@ contract DeploymIntent is ZoneInterface {
         }
     }
 
-    function getSeaportMetadata() external view returns (string memory name, Schema[] memory schemas) {}
+    function name() public pure override returns (string memory) {
+        return "DeploymIntent";
+    }
 
-    function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
+    function getSeaportMetadata()
+        external
+        pure
+        override(SIP5, ZoneInterface)
+        returns (string memory, Schema[] memory schemas)
+    {
+        schemas = new Schema[](1);
+        schemas[0] = _sip5Schema();
+        return (name(), schemas);
+    }
+
+    function supportsInterface(bytes4 interfaceId) external pure override(ZoneInterface, IERC165) returns (bool) {
         return interfaceId == type(ZoneInterface).interfaceId;
     }
 

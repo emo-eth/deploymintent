@@ -3,8 +3,9 @@ pragma solidity ^0.8.17;
 
 import {Test} from "forge-std/Test.sol";
 import {DeploymIntent, DeployParams} from "src/./DeploymIntent.sol";
-import {ZoneParameters} from "seaport-types/lib/ConsiderationStructs.sol";
+import {ZoneParameters, Schema} from "seaport-types/lib/ConsiderationStructs.sol";
 import {ZoneInterface} from "seaport-types/interfaces/ZoneInterface.sol";
+import {ISIP5} from "shipyard-core/interfaces/sips/ISIP5.sol";
 
 contract Mock {
     uint256 immutable value;
@@ -26,6 +27,12 @@ contract DeploymIntentTest is Test {
     }
 
     receive() external payable {}
+
+    function testConstructorEvent() public {
+        vm.expectEmit(true, false, false, false);
+        emit ISIP5.SeaportCompatibleContractDeployed();
+        new DeploymIntent(address(this));
+    }
 
     function testReceiveAndClaimBalance() public {
         uint256 startingBalance = address(this).balance;
@@ -137,5 +144,17 @@ contract DeploymIntentTest is Test {
 
     function testSupportsInterface() public {
         assertEq(target.supportsInterface(type(ZoneInterface).interfaceId), true);
+    }
+
+    function testName() public {
+        assertEq(target.name(), "DeploymIntent");
+    }
+
+    function testGetSeaportMetadata() public {
+        (string memory name, Schema[] memory schemas) = target.getSeaportMetadata();
+        assertEq(name, "DeploymIntent");
+        assertEq(schemas.length, 1);
+        assertEq(schemas[0].id, 5);
+        assertEq(schemas[0].metadata.length, 0);
     }
 }

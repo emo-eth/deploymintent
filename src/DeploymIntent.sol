@@ -96,10 +96,10 @@ contract DeploymIntent is ZoneInterface {
     }
 
     function computeZoneHash(bytes calldata data, bytes32 salt, uint256 initialValue) external view returns (bytes32) {
-        return computeZoneHash(keccak256(data), initialValue, salt);
+        return computeZoneHash(keccak256(data), salt, initialValue);
     }
 
-    function computeZoneHash(bytes32 initCodeHash, uint256 initialValue, bytes32 salt) public view returns (bytes32) {
+    function computeZoneHash(bytes32 initCodeHash, bytes32 salt, uint256 initialValue) public view returns (bytes32) {
         address addr = predictCreate2Address(initCodeHash, salt);
         return keccak256(abi.encodePacked(addr, initialValue));
     }

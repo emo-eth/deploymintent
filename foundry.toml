@@ -6,5 +6,7 @@ remappings = [
     'forge-std/=lib/forge-std/src/',
     'seaport-types/=lib/seaport-types/src/',
 ]
+ipfs_hash = 'none'
+optimizer_runs = 9_999_999
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
